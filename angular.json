@@ -121,6 +121,46 @@
           }
         }
       }
+    },
+    "ngx-storage": {
+      "root": "projects/ngx-storage",
+      "sourceRoot": "projects/ngx-storage/src",
+      "projectType": "library",
+      "prefix": "lib",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-ng-packagr:build",
+          "options": {
+            "tsConfig": "projects/ngx-storage/tsconfig.lib.json",
+            "project": "projects/ngx-storage/ng-package.json"
+          },
+          "configurations": {
+            "production": {
+              "project": "projects/ngx-storage/ng-package.prod.json"
+            }
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "projects/ngx-storage/src/test.ts",
+            "tsConfig": "projects/ngx-storage/tsconfig.spec.json",
+            "karmaConfig": "projects/ngx-storage/karma.conf.js"
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "projects/ngx-storage/tsconfig.lib.json",
+              "projects/ngx-storage/tsconfig.spec.json"
+            ],
+            "exclude": [
+              "**/node_modules/**"
+            ]
+          }
+        }
+      }
     }
   },
   "defaultProject": "local-storage-manager"

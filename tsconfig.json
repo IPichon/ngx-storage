@@ -16,6 +16,14 @@
     "lib": [
       "es2017",
       "dom"
-    ]
+    ],
+    "paths": {
+      "ngx-storage": [
+        "dist/ngx-storage"
+      ],
+      "ngx-storage/*": [
+        "dist/ngx-storage/*"
+      ]
+    }
   }
 }
