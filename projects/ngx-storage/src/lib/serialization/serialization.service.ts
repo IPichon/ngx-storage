@@ -133,7 +133,7 @@ export class SerializationService {
 
 // IMPORTANT: build-in types with their given mappers according to how you logically build them.
 
-// REGEXP
+// // REGEXP
 SerializationService.addConstructor(RegExp, 'Regexp', {
   serializer:  (regexp: RegExp): any => ({
     source: regexp.source,
