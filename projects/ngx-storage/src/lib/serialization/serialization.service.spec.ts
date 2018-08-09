@@ -1,24 +1,13 @@
 import { inject, TestBed } from '@angular/core/testing';
-
 import { SerializationService } from './serialization.service';
-import { LoggerService } from '../../core/services/logger/logger-service';
-import { environment } from '../../../environments/environment';
-import { LoggerConfig } from '../../core/services/logger/logger.config';
-import { ToastrModule, ToastrService } from 'ngx-toastr';
 
 describe('SerializationService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [
-        SerializationService,
-        LoggerService,
-        {
-          provide: LoggerConfig,
-          useValue: environment.loggerConfig
-        },
-        ToastrService,
+        SerializationService
       ],
-      imports: [ToastrModule.forRoot()]
+      imports: []
     });
   });
 

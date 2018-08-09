@@ -1,11 +1,10 @@
 import { TestBed } from '@angular/core/testing';
 import { StoreService } from './store.service';
 import { LocalForageService } from '../utils/local-forage';
-import { ResumeSamples } from '../../../tests/samples/resume.samples';
-import { ToastrModule, ToastrService } from 'ngx-toastr';
-import { LoggerConfig } from '../../core/services/logger/logger.config';
-import { environment } from '../../../environments/environment';
-import { LightSkillSamples } from '../../../tests/samples/light-skill.samples';
+import { DummySample } from '../test/dummy.samples';
+import { Observable } from 'rxjs';
+import { flatMap } from 'rxjs/operators';
+
 
 describe('StoreService', () => {
   let store;
@@ -13,14 +12,9 @@ describe('StoreService', () => {
     TestBed.configureTestingModule({
       providers: [
         StoreService,
-        LocalForageService,
-        {
-          provide: LoggerConfig,
-          useValue: environment.loggerConfig
-        },
-        ToastrService,
+        LocalForageService
       ],
-      imports: [ToastrModule.forRoot()]
+      imports: []
     });
     store = TestBed.get(StoreService);
   });
@@ -28,11 +22,11 @@ describe('StoreService', () => {
   describe('function put and get', () => {
     let value;
     let result;
-    describe('given a Resume value', () => {
+    describe('given a stored custom class value', () => {
       beforeEach(done => {
-        value = ResumeSamples.resumeBackend;
-        store.put('resume', value).subscribe(d =>  {
-          store.get('resume').subscribe(v => {
+        value = DummySample;
+        store.put('dummy', value).subscribe(d =>  {
+          store.get('dummy').subscribe(v => {
             result = v;
             done();
           });
@@ -42,14 +36,14 @@ describe('StoreService', () => {
         expect(result).toEqual(value);
       });
     });
-    describe('given an array of skills', () => {
+
+    describe('given a regexp', () => {
       beforeEach(done => {
-        value = LightSkillSamples.sampleGlobal;
-        store.put('skillSample', [...value]).subscribe(d =>  {
-          store.get('skillSample').subscribe(v => {
-            result = v;
-            done();
-          });
+        value = new RegExp('toto', 'ig');
+        putAndGet(store, value).subscribe(res => {
+          debugger;
+          result = res;
+          done();
         });
       });
       it('should returned the original value', () => {
@@ -58,3 +52,10 @@ describe('StoreService', () => {
     });
   });
 });
+
+
+function putAndGet(store, value): Observable<any> {
+  return store.put('value', value).pipe(flatMap(d => {
+    return store.get('value');
+  }));
+}
