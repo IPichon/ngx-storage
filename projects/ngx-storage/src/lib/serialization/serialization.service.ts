@@ -149,3 +149,19 @@ SerializationService.addConstructor(Date, 'Date', {
     },
     deserializer: (obj: any): any =>  new Date(obj.value)
 });
+
+// SET
+SerializationService.addConstructor(Set, 'Set', {
+  serializer: (set: Set<any>): any => {
+    return { value: Array.from(set) };
+  },
+  deserializer: (obj: any): Set<any> =>  new Set(obj.value)
+});
+
+// MAP
+SerializationService.addConstructor(Map, 'Map', {
+  serializer: (map: Map<any, any>): any => {
+    return { value: Array.from(map) };
+  },
+  deserializer: (obj: any): Map<any, any> =>  new Map(obj.value)
+});

@@ -19,7 +19,7 @@ describe('SerializationService', () => {
     describe('given a string', () => {
       it('should return the original value after', inject([SerializationService], (service: SerializationService) => {
         const original = 'Angular is great!';
-        const serialized = service.recursiveSerialize(original, []);
+        const serialized = service.recursiveSerialize(original, new Set());
         const deserialized = service.recursiveDeserialize(serialized);
         expect(deserialized).toEqual(original);
       }));
@@ -28,16 +28,26 @@ describe('SerializationService', () => {
     describe('given an array', () => {
       it('should return the original value', inject([SerializationService], (service: SerializationService) => {
         const original = ['Angular', 'is', 'great', '!' ];
-        const serialized = service.recursiveSerialize(original, []);
+        const serialized = service.recursiveSerialize(original, new Set());
         const deserialized = service.recursiveDeserialize(serialized);
         expect(deserialized).toEqual(original);
       }));
     });
 
-    describe('given a type with a given set of mappers', () => {
-      it('should return the original value with the correct typê', inject([SerializationService], (service: SerializationService) => {
+    describe('given a Regexp', () => {
+      it('should return the original value', inject([SerializationService], (service: SerializationService) => {
         const original = new RegExp('angular is( great || wonderful)');
-        const serialized = service.recursiveSerialize(original, []);
+        const serialized = service.recursiveSerialize(original, new Set());
+        const deserialized = service.recursiveDeserialize(serialized);
+        expect(deserialized).toEqual(original);
+      }));
+    });
+
+    describe('given a Map', () => {
+      it('should return the original value', inject([SerializationService], (service: SerializationService) => {
+        const original = new Map([[1, 'stuff'], [2, 'stuff']]);
+        const serialized = service.recursiveSerialize(original, new Set());
+        debugger;
         const deserialized = service.recursiveDeserialize(serialized);
         expect(deserialized).toEqual(original);
       }));
