@@ -20,70 +20,68 @@ describe('StoreService', () => {
   });
 
   describe('function put and get', () => {
-    let value;
-    let result;
     describe('given a stored custom class value', () => {
-      beforeEach(done => {
+      let value;
+      let result;
+      it('should returned the original value', done => {
         value = DummySample;
         putAndGet(store, value).subscribe(res => {
           result = res;
+          expect(result).toEqual(value);
           done();
         });
-      });
-      it('should returned the original value', () => {
-        expect(result).toEqual(value);
       });
     });
 
     describe('given a regexp', () => {
-      beforeEach(done => {
+      let value;
+      let result;
+      it('should returned the original value', done => {
         value = new RegExp('toto', 'ig');
         putAndGet(store, value).subscribe(res => {
           result = res;
+          expect(result).toEqual(value);
           done();
         });
       });
-      it('should returned the original value', () => {
-        expect(result).toEqual(value);
-      });
     });
 
-    xdescribe('given a Set', () => {
-      beforeEach(done => {
+    describe('given a Set', () => {
+      let value;
+      let result;
+      it('should returned the original value', done => {
         value = new Set(['some', 'stuff']);
         putAndGet(store, value).subscribe(res => {
           result = res;
+          expect(result).toEqual(value);
           done();
         });
-      });
-      it('should returned the original value', () => {
-        expect(result).toEqual(value);
       });
     });
 
-    xdescribe('given a Map', () => {
-      beforeEach(done => {
+    describe('given a Map', () => {
+      let value;
+      let result;
+      it('should returned the original value', done => {
         value = new Map([[1, 'stuff'], [2, 'stuff']]);
         putAndGet(store, value).subscribe(res => {
           result = res;
+          expect(result).toEqual(value);
           done();
         });
-      });
-      it('should returned the original value', () => {
-        expect(result).toEqual(value);
       });
     });
 
     describe('given a Date', () => {
-      beforeEach(done => {
+      let value;
+      let result;
+      it('should returned the original value', done => {
         value = new Date();
         putAndGet(store, value).subscribe(res => {
           result = res;
+          expect(result).toEqual(value);
           done();
         });
-      });
-      it('should returned the original value', () => {
-        expect(result).toEqual(value);
       });
     });
   });
