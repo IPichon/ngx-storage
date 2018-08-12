@@ -1,7 +1,7 @@
-import { Storable } from '../utils/serializable.decorator';
-import * as _ from 'lodash'
+import * as _ from 'lodash';
+import { StoreService } from '../store.service/store.service';
 
-@Storable('Inner')
+@StoreService.store('Inner')
 export class Inner {
   defaults = {
     regex: undefined,
@@ -14,7 +14,7 @@ export class Inner {
   }
 }
 
-@Storable('Dummy')
+@StoreService.store('Dummy')
 export class Dummy {
 
   static defaults = {
