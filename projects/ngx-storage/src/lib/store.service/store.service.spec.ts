@@ -1,12 +1,12 @@
 import { TestBed } from '@angular/core/testing';
-import { StoreService } from './store.service';
 import { LocalForageService } from '../utils/local-forage';
 import { DummySample } from '../test/dummy.samples';
 import { Observable } from 'rxjs';
 import { flatMap } from 'rxjs/operators';
+import { StoreService } from './store.service';
+import 'reflect-metadata';
 
-
-describe('StoreService', () => {
+describe('Store', () => {
   let store;
   beforeEach(() => {
     TestBed.configureTestingModule({

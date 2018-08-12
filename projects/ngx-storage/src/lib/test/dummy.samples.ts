@@ -1,6 +1,5 @@
 import { Dummy, Inner } from './dummy.model';
 
-
 const inner1: Inner = new Inner( {
     regexp: new RegExp('inner1', 'i'),
     stuff: ['some', 'stuff']
