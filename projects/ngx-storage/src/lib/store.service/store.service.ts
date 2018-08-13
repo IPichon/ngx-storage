@@ -1,9 +1,11 @@
 import { assert } from '../utils/assert';
 import * as _ from 'lodash';
 import { Injectable } from '@angular/core';
-import { Observable, throwError } from 'rxjs';
+import { Observable, of, throwError } from 'rxjs';
 import { LocalForageService } from '../utils/local-forage';
 import { map } from 'rxjs/internal/operators';
+import { error } from 'selenium-webdriver';
+import UnsupportedOperationError = error.UnsupportedOperationError;
 
 interface StorageMapper {
   serializer?(any: any): any;
@@ -111,21 +113,53 @@ export class StoreService {
   }
 
   /**
-   * @param key - key of the stored value
-   * @returns an observable of the date on which the value was saved
+   * @returns an observable of
+   * @param objKey
+   * @param metaKey
    */
-  getLastSaved(key: string): Observable<Date> {
-    return this._forageService.getItem(key).pipe(map(
+  getMetadata(objKey: string, metaKey: string): Observable<Date> {
+    return this._forageService.getItem(objKey).pipe(map(
       fromStore => {
         if (fromStore) {
           const storedValue = JSON.parse(fromStore);
 
-          return new Date(storedValue._meta.lastSaved);
+          return new Date(storedValue._meta[metaKey]);
         } else {
           throwError('Could not load data from LocalStorage');
         }
       }
     ));
+  }
+
+  /**
+   * @param  objKey: key of the stored object
+   * @returns all the metadata for the given object
+   */
+  getAllMetadata(objKey: string){
+    return this._forageService.getItem(objKey).pipe(map(
+      fromStore => {
+        if (fromStore) {
+          const storedValue = JSON.parse(fromStore);
+
+          return new Date(storedValue._meta);
+        } else {
+          throwError('Could not load data from LocalStorage');
+        }
+      }
+    ));
+  }
+
+  /**
+   * todo:
+   * should allow to change the value of a given metadata with its key
+   * should error if the value does not match the right format
+   *
+   * @param {string} objKey
+   * @param {string} metaKey
+   * @returns {Observable<any>}
+   */
+  setMetaData(objKey: string, value: any, metaKey: string): Observable<any> {
+    return throwError(new UnsupportedOperationError('Cannot set metadata, feature not yet implemented'));
   }
 
   /**
@@ -227,38 +261,3 @@ export class StoreService {
     return this._deserialize(obj);
   }
 }
-
-// IMPORTANT: build-in types with their given mappers according to how you logically build them.
-
-// // REGEXP
-StoreService.addConstructor(RegExp, 'Regexp', {
-  serializer:  (regexp: RegExp): any => ({
-    source: regexp.source,
-    flags: regexp.flags
-  }),
-  deserializer: (obj: any): RegExp => new RegExp(obj.source, obj.flags)
-});
-
-// DATE
-StoreService.addConstructor(Date, 'Date', {
-  serializer: (date: Date): any => {
-    return { value: (date ?  date.toISOString() : '') };
-  },
-  deserializer: (obj: any): Date =>  new Date(obj.value)
-});
-
-// SET
-StoreService.addConstructor(Set, 'Set', {
-  serializer: (set: Set<any>): any => {
-    return { value: Array.from(set) };
-  },
-  deserializer: (obj: any): Set<any> =>  new Set(obj.value)
-});
-
-// MAP
-StoreService.addConstructor(Map, 'Map', {
-  serializer: (map1: Map<any, any>): any => {
-    return { value: Array.from(map1) };
-  },
-  deserializer: (obj: any): Map<any, any> =>  new Map(obj.value)
-});
