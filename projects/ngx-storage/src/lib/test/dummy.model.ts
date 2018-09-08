@@ -3,10 +3,6 @@ import { StoreService } from '../store.service/store.service';
 
 @StoreService.store('Inner')
 export class Inner {
-  defaults = {
-    regex: undefined,
-    stuff: []
-  };
   regexp: RegExp;
   stuff: string[];
   constructor(inner: Partial<Inner>) {

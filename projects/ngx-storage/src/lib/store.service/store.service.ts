@@ -1,11 +1,9 @@
 import { assert } from '../utils/assert';
 import * as _ from 'lodash';
 import { Injectable } from '@angular/core';
-import { Observable, of, throwError } from 'rxjs';
+import { Observable, throwError } from 'rxjs';
 import { LocalForageService } from '../utils/local-forage';
 import { map } from 'rxjs/internal/operators';
-import { error } from 'selenium-webdriver';
-import UnsupportedOperationError = error.UnsupportedOperationError;
 
 interface StorageMapper {
   serializer?(any: any): any;
@@ -135,7 +133,7 @@ export class StoreService {
    * @param  objKey: key of the stored object
    * @returns all the metadata for the given object
    */
-  getAllMetadata(objKey: string){
+  getAllMetadata(objKey: string) {
     return this._forageService.getItem(objKey).pipe(map(
       fromStore => {
         if (fromStore) {
@@ -159,7 +157,7 @@ export class StoreService {
    * @returns {Observable<any>}
    */
   setMetaData(objKey: string, value: any, metaKey: string): Observable<any> {
-    return throwError(new UnsupportedOperationError('Cannot set metadata, feature not yet implemented'));
+    return throwError('Cannot set metadata, feature not yet implemented');
   }
 
   /**
@@ -261,3 +259,36 @@ export class StoreService {
     return this._deserialize(obj);
   }
 }
+
+// REGEXP
+StoreService.addConstructor(RegExp, 'Regexp', {
+  serializer:  (regexp: RegExp): any => ({
+    source: regexp.source,
+    flags: regexp.flags
+  }),
+  deserializer: (obj: any): RegExp => new RegExp(obj.source, obj.flags)
+});
+
+// DATE
+StoreService.addConstructor(Date, 'Date', {
+  serializer: (date: Date): any => {
+    return { value: (date ?  date.toISOString() : '') };
+  },
+  deserializer: (obj: any): Date =>  new Date(obj.value)
+});
+
+// SET
+StoreService.addConstructor(Set, 'Set', {
+  serializer: (set: Set<any>): any => {
+    return { value: Array.from(set) };
+  },
+  deserializer: (obj: any): Set<any> =>  new Set(obj.value)
+});
+
+// MAP
+StoreService.addConstructor(Map, 'Map', {
+  serializer: (map1: Map<any, any>): any => {
+    return { value: Array.from(map1) };
+  },
+  deserializer: (obj: any): Map<any, any> =>  new Map(obj.value)
+});
