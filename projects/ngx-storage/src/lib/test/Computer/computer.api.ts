@@ -31,4 +31,7 @@ export class ComputerApi {
 
     return throwError('Could not load data');
   }
+
+  deleteOne(id: number) {
+  }
 }

@@ -1,7 +1,7 @@
 import 'reflect-metadata';
 import { flatMap } from 'rxjs/internal/operators';
 import { Observable, of } from 'rxjs';
-import { StoreService } from './store.service/store.service';
+import { StoreService } from './store/store.service';
 
 /**
  * todo documentation
@@ -31,5 +31,12 @@ export function CacheResult(key: string) {
         }
       ));
     };
+  };
+}
+
+export function ClearCache(key: string) {
+  return function cache(target: any, property: string, descriptor: TypedPropertyDescriptor<Function>) {
+    const method = descriptor.value;
+    return method.apply(this);
   };
 }
