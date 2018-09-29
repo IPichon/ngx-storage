@@ -176,9 +176,9 @@ describe('CacheResult decorator', () => {
         });
       });
     });
-    afterAll(inject([LocalForageService], (service: LocalForageService) => {
-      service.clear();
-    }));
+    afterAll(() => {
+      LocalForageService.clear();
+    });
 
     describe('calling the second function after calling the first', () => {
       describe('for the first time', () => {
@@ -208,9 +208,9 @@ describe('CacheResult decorator', () => {
 
       });
 
-      afterAll(inject([LocalForageService], (service: LocalForageService) => {
-        service.clear();
-      }));
+      afterAll(() => {
+        LocalForageService.clear();
+      });
 
       describe('for the second time', () => {
 

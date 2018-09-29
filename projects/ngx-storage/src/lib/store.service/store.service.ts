@@ -79,30 +79,30 @@ export class StoreService {
    * @param obj - the object to be stored
    * @returns
    */
-  put(key: string, obj: any): Observable<any> {
+  static put(key: string, obj: any): Observable<any> {
     // create value to store with metadata
     const storedValue = {
       _meta: {
         lastSaved: new Date()
       },
-      value: this.recursiveSerialize(obj, new Set())
+      value: StoreService.recursiveSerialize(obj, new Set())
     };
 
-    return this._forageService.setItem(key, JSON.stringify(storedValue));
+    return LocalForageService.setItem(key, JSON.stringify(storedValue));
   }
 
   /**
    * @param key - the key of the stored value to be retrieved
    * @returns an observable of the desired value
    */
-  get(key: string): Observable<any> {
-    return this._forageService.getItem(key).pipe(map(
+  static get(key: string): Observable<any> {
+    return LocalForageService.getItem(key).pipe(map(
       fromStore => {
         if (fromStore) {
           const storedValue = JSON.parse(fromStore);
           const value = storedValue.value;
 
-          return this.recursiveDeserialize(_.cloneDeep(value));
+          return StoreService.recursiveDeserialize(_.cloneDeep(value));
         } else {
           throwError('Could not load data from LocalStorage');
         }
@@ -115,8 +115,8 @@ export class StoreService {
    * @param objKey
    * @param metaKey
    */
-  getMetadata(objKey: string, metaKey: string): Observable<Date> {
-    return this._forageService.getItem(objKey).pipe(map(
+  static getMetadata(objKey: string, metaKey: string): Observable<Date> {
+    return LocalForageService.getItem(objKey).pipe(map(
       fromStore => {
         if (fromStore) {
           const storedValue = JSON.parse(fromStore);
@@ -133,8 +133,8 @@ export class StoreService {
    * @param  objKey: key of the stored object
    * @returns all the metadata for the given object
    */
-  getAllMetadata(objKey: string) {
-    return this._forageService.getItem(objKey).pipe(map(
+  static getAllMetadata(objKey: string) {
+    return LocalForageService.getItem(objKey).pipe(map(
       fromStore => {
         if (fromStore) {
           const storedValue = JSON.parse(fromStore);
@@ -156,7 +156,7 @@ export class StoreService {
    * @param {string} metaKey
    * @returns {Observable<any>}
    */
-  setMetaData(objKey: string, value: any, metaKey: string): Observable<any> {
+  static setMetaData(objKey: string, value: any, metaKey: string): Observable<any> {
     return throwError('Cannot set metadata, feature not yet implemented');
   }
 
@@ -164,20 +164,20 @@ export class StoreService {
    * remove all values from localstorage
    * @returns Observable<any>
    */
-  clearAll(): Observable<any> {
-    return this._forageService.clear();
+  static clearAll(): Observable<any> {
+    return LocalForageService.clear();
   }
 
   /**
    * @param  key: string - the key of the item to be removed
    * @returns Observable<any>
    */
-  removeItem(key: string): Observable<any> {
-    return this._forageService.removeItem(key);
+  static removeItem(key: string): Observable<any> {
+    return LocalForageService.removeItem(key);
   }
 
   // tslint:disable-next-line
-  private _serialize(obj: any): ObjectWrapper<any> {
+  private static _serialize(obj: any): ObjectWrapper<any> {
     let value = _.cloneDeep(obj);
     let constructorKey;
     // if object is prototyped
@@ -205,8 +205,8 @@ export class StoreService {
    * @param exclusions: set of object that should not serialized to avoid infinite recursion
    * @returns
    */
-  recursiveSerialize(obj: any, exclusions: any): any {
-    obj = this._serialize(obj);
+  static recursiveSerialize(obj: any, exclusions: any): any {
+    obj = StoreService._serialize(obj);
     // attempt serialization for all nested object.
     // Use a for... in instead of a Object.keys to be able to break the loop in case of infinite recursion
     for (const i in obj.value) {
@@ -219,7 +219,7 @@ export class StoreService {
 
           // add this to exclusions, to avoid self-reference to cause infinite recursion
           exclusions.add(o);
-          obj.value[i] = this.recursiveSerialize(o, exclusions);
+          obj.value[i] = StoreService.recursiveSerialize(o, exclusions);
           exclusions.delete(o);
         }
       }
@@ -228,7 +228,7 @@ export class StoreService {
     return obj;
   }
 
-  private _deserialize(wrapper: ObjectWrapper<any>): any {
+  private static _deserialize(wrapper: ObjectWrapper<any>): any {
     const serial = wrapper.constructorKey;
     let obj = wrapper.value;
     if (_.isObject(obj) && serial) {
@@ -246,7 +246,7 @@ export class StoreService {
    * @returns
    * recursively deserialize object
    */
-  recursiveDeserialize(obj: any): any {
+  static recursiveDeserialize(obj: any): any {
     for (const i in obj.value) {
       if (obj.value.hasOwnProperty(i)) {
         const o = obj.value[i];
@@ -256,7 +256,7 @@ export class StoreService {
       }
     }
 
-    return this._deserialize(obj);
+    return StoreService._deserialize(obj);
   }
 }
 
