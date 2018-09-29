@@ -7,7 +7,6 @@ import { StoreService } from './store.service';
 import 'reflect-metadata';
 
 describe('Store', () => {
-  let store;
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [
@@ -16,7 +15,6 @@ describe('Store', () => {
       ],
       imports: []
     });
-    store = TestBed.get(StoreService);
   });
 
   describe('function put and get', () => {
@@ -25,7 +23,7 @@ describe('Store', () => {
       let result;
       it('should returned the original value', done => {
         value = DummySample;
-        putAndGet(store, value).subscribe(res => {
+        putAndGet(value).subscribe(res => {
           result = res;
           expect(result).toEqual(value);
           done();
@@ -38,7 +36,7 @@ describe('Store', () => {
       let result;
       it('should returned the original value', done => {
         value = new RegExp('toto', 'ig');
-        putAndGet(store, value).subscribe(res => {
+        putAndGet(value).subscribe(res => {
           result = res;
           expect(result).toEqual(value);
           done();
@@ -51,7 +49,7 @@ describe('Store', () => {
       let result;
       it('should returned the original value', done => {
         value = new Set(['some', 'stuff']);
-        putAndGet(store, value).subscribe(res => {
+        putAndGet(value).subscribe(res => {
           result = res;
           expect(result).toEqual(value);
           done();
@@ -64,7 +62,7 @@ describe('Store', () => {
       let result;
       it('should returned the original value', done => {
         value = new Map([[1, 'stuff'], [2, 'stuff']]);
-        putAndGet(store, value).subscribe(res => {
+        putAndGet(value).subscribe(res => {
           result = res;
           expect(result).toEqual(value);
           done();
@@ -77,7 +75,7 @@ describe('Store', () => {
       let result;
       it('should returned the original value', done => {
         value = new Date();
-        putAndGet(store, value).subscribe(res => {
+        putAndGet(value).subscribe(res => {
           result = res;
           expect(result).toEqual(value);
           done();
@@ -88,8 +86,8 @@ describe('Store', () => {
 });
 
 
-function putAndGet(store, value): Observable<any> {
-  return store.put('value', value).pipe(flatMap(d => {
-    return store.get('value');
+function putAndGet(value): Observable<any> {
+  return StoreService.put('value', value).pipe(flatMap(d => {
+    return StoreService.get('value');
   }));
 }
