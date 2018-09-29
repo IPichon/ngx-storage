@@ -1,5 +1,5 @@
 import * as _ from 'lodash';
-import { StoreService } from '../store.service/store.service';
+import { StoreService } from '../store/store.service';
 
 @StoreService.store('Inner')
 export class Inner {

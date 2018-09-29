@@ -1,6 +1,6 @@
 import { inject, TestBed } from '@angular/core/testing';
 import 'reflect-metadata';
-import { StoreService } from '../store.service/store.service';
+import { StoreService } from '../store/store.service';
 import { LocalForageService } from '../utils/local-forage';
 import { ComputerApi } from './Computer/computer.api';
 import { ComputerApiAnnotated } from './Computer/computer.api.annotated';

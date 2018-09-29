@@ -1,4 +1,4 @@
-import { StoreService } from '../../store.service/store.service';
+import { StoreService } from '../../store/store.service';
 import * as _ from 'lodash';
 
 @StoreService.store('Company')
