@@ -1,8 +1,8 @@
-import { StoreService } from '../../store/store.service';
 import { Company } from '../Company/company.model';
 import * as _ from 'lodash';
+import { Cacheable } from '../../memoiz.decorator';
 
-@StoreService.store('Compute')
+@Cacheable('Compute')
 export class Computer {
   name: string;
   released: Date;

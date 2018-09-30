@@ -1,10 +1,10 @@
 import { TestBed } from '@angular/core/testing';
-import { LocalForageService } from '../utils/local-forage';
-import { DummySample } from '../test/dummy.samples';
+import { LocalForageService } from './local-forage';
 import { Observable } from 'rxjs';
 import { flatMap } from 'rxjs/operators';
 import { StoreService } from './store.service';
 import 'reflect-metadata';
+import { ComputerSamples } from '../test/Computer/computerSamples';
 
 describe('Store', () => {
   beforeEach(() => {
@@ -22,7 +22,7 @@ describe('Store', () => {
       let value;
       let result;
       it('should returned the original value', done => {
-        value = DummySample;
+        value = new ComputerSamples().c1;
         putAndGet(value).subscribe(res => {
           result = res;
           expect(result).toEqual(value);
@@ -87,7 +87,7 @@ describe('Store', () => {
 
 
 function putAndGet(value): Observable<any> {
-  return StoreService.put('value', value).pipe(flatMap(d => {
+  return StoreService.put('value', value).pipe(flatMap(() => {
     return StoreService.get('value');
   }));
 }

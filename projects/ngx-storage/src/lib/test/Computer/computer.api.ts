@@ -1,8 +1,8 @@
 import { of, throwError } from 'rxjs';
-import { ComputerSample } from './computer.sample';
+import { ComputerSamples } from './computerSamples';
 
 export class ComputerApi {
-  samples = new ComputerSample();
+  samples = new ComputerSamples();
 
   getOne(id) {
     console.log('computing result...');

@@ -1,10 +1,15 @@
 import 'reflect-metadata';
 import { flatMap } from 'rxjs/internal/operators';
-import { Observable, of } from 'rxjs';
-import { StoreService } from './store/store.service';
+import { Observable, of, throwError } from 'rxjs';
+import { StorageMapper, StoreService } from './store/store.service';
+import { assert } from './utils/assert';
 
 /**
- * todo documentation
+ * DECORATOR:
+ * whan applied to a method, if the method is call for the first time with some arguments,
+ * it will execute all instructions in order to return the resultand will cache it in the localstorage
+ * if called a second time with the same arguments, then it will retrieve the result from the localstorage directly
+ *
  * @param {string} key
  * @returns {any}
  * @constructor
@@ -34,9 +39,41 @@ export function CacheResult(key: string) {
   };
 }
 
+/**
+ *
+ * @param key
+ * @constructor
+ */
 export function ClearCache(key: string) {
   return function cache(target: any, property: string, descriptor: TypedPropertyDescriptor<Function>) {
-    const method = descriptor.value;
-    return method.apply(this);
+    throwError('Decorator @ClearCahe is not yet supported');
+  };
+}
+
+
+/**
+ * DECORATOR:
+ * if applied to a class, it will register this class to be able to rebuild typed instance retrieved from the localstorage
+ * NB: it can only be applied to objects with a prototype
+ *
+ * @param {string} constructorKey
+ * @param {StorageMapper} mappers
+ * @returns {(target: any) => any}
+ */
+export function Cacheable(constructorKey: string, mappers?: StorageMapper) {
+  return function add(target: any) {
+    mappers = mappers || {};
+
+    // retrives object constructor
+    assert(target.prototype, `${target} requires a prototype.`);
+    const ctor = target.prototype.constructor;
+
+    // get or generate mappers
+    const serializer = mappers.serializer || target.prototype.serializer || ((item: any) => item);
+    const deserializer = mappers.deserializer || target.prototype.deserializer || ((item: any) => new ctor(item));
+
+    StoreService.addConstructor(target, constructorKey, {serializer, deserializer});
+
+    return target;
   };
 }
