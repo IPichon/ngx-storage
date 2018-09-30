@@ -1,13 +1,13 @@
-import 'reflect-metadata';
 import { flatMap } from 'rxjs/internal/operators';
 import { Observable, of, throwError } from 'rxjs';
 import { StorageMapper, StoreService } from './store/store.service';
 import { assert } from './utils/assert';
+import { LocalForageService } from './store/local-forage';
 
 /**
  * DECORATOR:
  * whan applied to a method, if the method is call for the first time with some arguments,
- * it will execute all instructions in order to return the resultand will cache it in the localstorage
+ * it will execute all instructions in order to return the result and will cache it in the localstorage
  * if called a second time with the same arguments, then it will retrieve the result from the localstorage directly
  *
  * @param {string} key
@@ -45,8 +45,13 @@ export function CacheResult(key: string) {
  * @constructor
  */
 export function ClearCache(key: string) {
-  return function cache(target: any, property: string, descriptor: TypedPropertyDescriptor<Function>) {
-    throwError('Decorator @ClearCahe is not yet supported');
+  return function clear(target: any, property: string, descriptor: TypedPropertyDescriptor<Function>) {
+    descriptor.value = function (): Observable<any> {
+      const args = arguments;
+      return LocalForageService.clear().pipe(flatMap(() => {
+        return descriptor.value.apply(this, args);
+      }));
+    };
   };
 }
 
@@ -69,7 +74,7 @@ export function Cacheable(constructorKey: string, mappers?: StorageMapper) {
     const ctor = target.prototype.constructor;
 
     // get or generate mappers
-    const serializer = mappers.serializer || target.prototype.serializer || ((item: any) => item);
+    const serializer = mappers.serializer || target.prototype.serializer || ((item: any) => item);
     const deserializer = mappers.deserializer || target.prototype.deserializer || ((item: any) => new ctor(item));
 
     StoreService.addConstructor(target, constructorKey, {serializer, deserializer});

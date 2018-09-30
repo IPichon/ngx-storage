@@ -18,7 +18,12 @@ module.exports = function (config) {
     coverageIstanbulReporter: {
       dir: require('path').join(__dirname, '../../coverage'),
       reports: ['html', 'lcovonly'],
-      fixWebpackSourcePaths: true
+      fixWebpackSourcePaths: true,
+      preprocessors: {
+        // source files, that you wanna generate coverage for
+        // do not include tests or libraries
+        'src/lib/!(test|utils)/*.js': ['coverage']
+      },
     },
     reporters: ['progress', 'kjhtml'],
     port: 9876,
@@ -26,6 +31,6 @@ module.exports = function (config) {
     logLevel: config.LOG_INFO,
     autoWatch: true,
     browsers: ['Chrome'],
-    singleRun: false
+    singleRun: false,
   });
 };

@@ -3,28 +3,31 @@ import { CompanyApiAnnotated } from '../Company/company.api.annotated';
 import { ComputerApi } from '../Computer/computer.api';
 import { CompanyApi } from '../Company/company.api';
 
-export function prepareFun1() {
-  let aComputerApi: ComputerApiAnnotated;
-  aComputerApi = new ComputerApiAnnotated();
+export function prepareCache1() {
+  const aComputerApi = new ComputerApiAnnotated();
   return (...args) => {
     return aComputerApi.getPage(args[0], args[1]);
   };
 }
 
-export function prepareFun2() {
-  let aCompanyApi: CompanyApiAnnotated;
-  aCompanyApi = new CompanyApiAnnotated();
+export function prepareCache2() {
+  const aCompanyApi = new CompanyApiAnnotated();
   return  (...args) => {
     return aCompanyApi.getPage(args[0], args[1]);
   };
 }
 
-export function prepareResultFun1(args) {
+export function prepareClear1() {
+  const aComputerApi = new ComputerApiAnnotated();
+  return (id) => aComputerApi.delete(id);
+}
+
+export function prepareResultCache1(args) {
   const computerApi = new ComputerApi();
   return computerApi.getPage(args[0], args[1]);
 }
 
-export function prepareResultFun2(args) {
+export function prepareResultCache2(args) {
   const companyApi = new CompanyApi();
   return companyApi.getPage(args[0], args[1]);
 }
