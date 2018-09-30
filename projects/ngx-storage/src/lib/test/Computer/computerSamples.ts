@@ -1,7 +1,7 @@
 import { Computer } from './computer';
 import { CompanySamples } from '../Company/company.samples';
 
-export class ComputerSample {
+export class ComputerSamples {
 
   readonly  c1 = new Computer({
     name: 'MacBook Pro 15.4 inch',

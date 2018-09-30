@@ -1,10 +1,9 @@
-import { StoreService } from '../../store/store.service';
 import * as _ from 'lodash';
+import { Cacheable } from '../../memoiz.decorator';
 
-@StoreService.store('Company')
+@Cacheable('Company')
 export class Company {
   name: string;
-  created: Date;
 
   constructor(company: Partial<Company>) {
     _.cloneDeep(company);

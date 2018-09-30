@@ -2,15 +2,15 @@ import { assert } from '../utils/assert';
 import * as _ from 'lodash';
 import { Injectable } from '@angular/core';
 import { Observable, throwError } from 'rxjs';
-import { LocalForageService } from '../utils/local-forage';
+import { LocalForageService } from './local-forage';
 import { map } from 'rxjs/internal/operators';
 
-interface StorageMapper {
+export interface StorageMapper {
   serializer?(any: any): any;
   deserializer?(any: any): any;
 }
 
-interface ObjectWrapper<T> {
+export interface ObjectWrapper<T> {
   value: T;
   constructorKey?: string;
 }
@@ -27,30 +27,6 @@ export class StoreService {
    *  otherwise specific mappers should be given as parametr to the method
    */
   private static mappers: Map<string, StorageMapper> = new Map();
-
-  /**
-   * DECORATOR function
-   * @param {string} constructorKey
-   * @param {StorageMapper} mappers
-   * @returns {(target: any) => any}
-   */
-  static store(constructorKey: string, mappers?: StorageMapper) {
-    return function add(target: any) {
-      mappers = mappers || {};
-
-      // retrives object constructor
-      assert(target.prototype, `${target} requires a prototype.`);
-      const ctor = target.prototype.constructor;
-
-      // get or generate mappers
-      const serializer = mappers.serializer || target.prototype.serializer || ((item: any) => item);
-      const deserializer = mappers.deserializer || target.prototype.deserializer || ((item: any) => new ctor(item));
-
-      StoreService.addConstructor(target, constructorKey, {serializer, deserializer});
-
-      return target;
-    };
-  }
 
   /**
    * @param objectClass
@@ -70,7 +46,7 @@ export class StoreService {
     this.mappers.set(name, mappers);
   }
 
-  constructor(private _forageService: LocalForageService) {}
+  constructor() {}
 
   // LOCAL STORAGE INTERACTIONS
 
@@ -111,64 +87,6 @@ export class StoreService {
   }
 
   /**
-   * @returns an observable of
-   * @param objKey
-   * @param metaKey
-   */
-  static getMetadata(objKey: string, metaKey: string): Observable<Date> {
-    return LocalForageService.getItem(objKey).pipe(map(
-      fromStore => {
-        if (fromStore) {
-          const storedValue = JSON.parse(fromStore);
-
-          return new Date(storedValue._meta[metaKey]);
-        } else {
-          throwError('Could not load data from LocalStorage');
-        }
-      }
-    ));
-  }
-
-  /**
-   * @param  objKey: key of the stored object
-   * @returns all the metadata for the given object
-   */
-  static getAllMetadata(objKey: string) {
-    return LocalForageService.getItem(objKey).pipe(map(
-      fromStore => {
-        if (fromStore) {
-          const storedValue = JSON.parse(fromStore);
-
-          return new Date(storedValue._meta);
-        } else {
-          throwError('Could not load data from LocalStorage');
-        }
-      }
-    ));
-  }
-
-  /**
-   * todo:
-   * should allow to change the value of a given metadata with its key
-   * should error if the value does not match the right format
-   *
-   * @param {string} objKey
-   * @param {string} metaKey
-   * @returns {Observable<any>}
-   */
-  static setMetaData(objKey: string, value: any, metaKey: string): Observable<any> {
-    return throwError('Cannot set metadata, feature not yet implemented');
-  }
-
-  /**
-   * remove all values from localstorage
-   * @returns Observable<any>
-   */
-  static clearAll(): Observable<any> {
-    return LocalForageService.clear();
-  }
-
-  /**
    * @param  key: string - the key of the item to be removed
    * @returns Observable<any>
    */
@@ -176,7 +94,6 @@ export class StoreService {
     return LocalForageService.removeItem(key);
   }
 
-  // tslint:disable-next-line
   private static _serialize(obj: any): ObjectWrapper<any> {
     let value = _.cloneDeep(obj);
     let constructorKey;
@@ -193,7 +110,6 @@ export class StoreService {
         constructorKey = serial;
       }
     }
-
     return {
       value,
       constructorKey
@@ -259,6 +175,9 @@ export class StoreService {
     return StoreService._deserialize(obj);
   }
 }
+
+
+
 
 // REGEXP
 StoreService.addConstructor(RegExp, 'Regexp', {
