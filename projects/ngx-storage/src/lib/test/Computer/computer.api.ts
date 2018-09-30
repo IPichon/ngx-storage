@@ -33,6 +33,7 @@ export class ComputerApi {
   }
 
   deleteOne(id: number) {
-    return of();
+    console.error('we meet again');
+    return of('');
   }
 }

@@ -40,17 +40,20 @@ export function CacheResult(key: string) {
 }
 
 /**
- *
  * @param key
  * @constructor
  */
 export function ClearCache(key: string) {
   return function clear(target: any, property: string, descriptor: TypedPropertyDescriptor<Function>) {
+    const method = descriptor.value;
     descriptor.value = function (): Observable<any> {
       const args = arguments;
-      return LocalForageService.clear().pipe(flatMap(() => {
-        return descriptor.value.apply(this, args);
-      }));
+      return LocalForageService.keys().pipe((flatMap(
+        keys => {
+          keys.filter(k => k.startsWith(`${key}@`))
+            .forEach(k => LocalForageService.removeItem(k));
+          return method.apply(this, args);
+        })));
     };
   };
 }

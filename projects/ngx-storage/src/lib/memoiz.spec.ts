@@ -176,7 +176,6 @@ describe('Memoiz feature', () => {
   });
 
 
-
   describe('@ClearCache', () => {
 
     describe('given a method clear1 annotated with @ClearCache', () => {
@@ -193,7 +192,7 @@ describe('Memoiz feature', () => {
           });
           describe('and calling clear1 after', () => {
             beforeEach((done) => {
-               clear1(1).subscribe(() => done());
+              clear1(1).subscribe(() => done());
             });
           });
           describe('and calling cache1 with the same set of args afterwards', () => {
@@ -205,18 +204,40 @@ describe('Memoiz feature', () => {
             });
           });
         });
-      });
-    });
-    afterAll(() => {
-      LocalForageService.clear();
-    });
-    it('should not find any cached result for the method any more', () => {
-    });
 
-    it('should not clear the result of others methods from the cache', () => {
+        describe('calling cache2 method', () => {
+          beforeEach((done) => {
+              cache2(...args1).subscribe(() => done());
+            }
+          );
+          describe('and calling clear1 after', () => {
+            beforeEach((done) => {
+              clear1(1).subscribe(() => done());
+            });
+            describe('and calling cache2 with the same set of args afterwards', () => {
+              it('should NOT call the method body', (done) => {
+                expectMethodBodyNotToHaveBeenCalled(cache2, args1, done);
+              });
+              it('should return the result', () => {
+
+              });
+            });
+          });
+        });
+      });
 
     });
   });
+  afterAll(() => {
+    LocalForageService.clear();
+  });
+  it('should not find any cached result for the method any more', () => {
+  });
+
+  it('should not clear the result of others methods from the cache', () => {
+
+  });
 });
+
 
 

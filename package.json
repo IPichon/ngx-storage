@@ -5,7 +5,7 @@
     "ng": "ng",
     "start": "ng serve --aot",
     "build": "ng build",
-    "test": "ng test ngx-storage --watch=false --code-coverage",
+    "test": "ng test ngx-storage --source-map --code-coverage",
     "lint": "ng lint",
     "e2e": "ng e2e"
   },
