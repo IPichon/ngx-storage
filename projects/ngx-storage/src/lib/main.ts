@@ -1,5 +1,5 @@
 import { flatMap } from 'rxjs/internal/operators';
-import { Observable, of, throwError } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { StorageMapper, StoreService } from './store/store.service';
 import { assert } from './utils/assert';
 import { LocalForageService } from './store/local-forage';

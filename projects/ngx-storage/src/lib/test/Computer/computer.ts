@@ -1,6 +1,6 @@
 import { Company } from '../Company/company.model';
 import * as _ from 'lodash';
-import { Cacheable } from '../../memoiz.decorator';
+import { Cacheable } from '../../main';
 
 @Cacheable('Compute')
 export class Computer {

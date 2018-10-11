@@ -1,5 +1,5 @@
 import * as _ from 'lodash';
-import { Cacheable } from '../../memoiz.decorator';
+import { Cacheable } from '../../main';
 
 @Cacheable('Company')
 export class Company {

@@ -1,4 +1,4 @@
-import { CacheResult, ClearCache } from '../../memoiz.decorator';
+import { CacheResult, ClearCache } from '../../main';
 import { ComputerApi } from './computer.api';
 
 export class ComputerApiAnnotated {

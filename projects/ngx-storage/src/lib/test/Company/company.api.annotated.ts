@@ -1,4 +1,4 @@
-import { CacheResult } from '../../memoiz.decorator';
+import { CacheResult } from '../../main';
 import { CompanyApi } from './company.api';
 
 export class CompanyApiAnnotated {
